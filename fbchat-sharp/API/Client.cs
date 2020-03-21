@@ -3167,13 +3167,8 @@ namespace fbchat_sharp.API
             // Client payload (that weird numbers)
             else if (delta_class == "ClientPayload")
             {
-                var json = delta.Value<JArray>("payload").Values<int>();
-                string jsonString = "";
-                foreach (var val in json)
-                {
-                    char character = Convert.ToChar(val);
-                    jsonString = jsonString + character;
-                }
+                var json = delta.get("payload")?.Value<JArray>()?.Values<int>();
+                var jsonString = json.Aggregate(new StringBuilder(), (s, i) => s.Append(Convert.ToChar(i)), (s) => s.ToString());
                 var payload = JToken.Parse(jsonString);
                 ts = m.get("ofd_ts")?.Value<long>() ?? 0;
                 foreach (var d in payload.get("deltas") ?? new JArray())
